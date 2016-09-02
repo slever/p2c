@@ -1,0 +1,39 @@
+<section class="newuser-template">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align:center">New user</div>
+
+		<div class="panel-body">
+			<div class="form-group">
+				<form name="myForm" ng-submit="vm.submit()" class="form-signin">
+					<p>First name : 
+						<input class="form-control" rows="1" id="firstName" ng-model="vm.user.firstName" required></input>
+	
+					</p>
+
+					<p>Last name : 
+						<input class="form-control" rows="1" id="lastName" ng-model="vm.user.lastName" required></input> 
+					</p>
+					<p>E-mail : 
+						<input class="form-control" rows="1" id="email" ng-model="vm.user.email" required></input> 
+					</p>
+					<p>Mobile : 
+						<input class="form-control" rows="1" id="mobile" ng-model="vm.user.mobile" required></input> 
+					</p>
+					<p>Role : <br>
+					<label ng-repeat="role in vm.roles">
+					  <input
+					    type="checkbox"
+					    name="vm.user.roles[]"
+					    value="{{role}}"
+					    ng-checked="vm.user.roles.indexOf(role) > -1"
+					    ng-click="vm.toggleSelection(role)"
+					  > {{role}}
+					</label>
+					</p>
+					<input type="submit" value="Submit" class="btn btn-default" />
+				</form>
+				<response-message></response-message>
+			</div>
+		</div>
+	</div>
+</section>
