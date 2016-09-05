@@ -68,7 +68,7 @@ public class UserResource {
       @ApiResponse(code = 403, message = "Forbidden"),
       @ApiResponse(code = 404, message = "Not Found"),
       @ApiResponse(code = 500, message = "Failure") })
-  List<UserDTO> getUsers() {
+  public List<UserDTO> getUsers() {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("getUsers");
     }
@@ -83,7 +83,7 @@ public class UserResource {
   @RequestMapping(value = "/{login:.+}", method = RequestMethod.GET)
   @ResponseBody
   @Transactional(readOnly = true)
-  UserDTO getUser(@PathVariable("login") String login) {
+  public UserDTO getUser(@PathVariable("login") String login) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("getUser({}) from login", login);
     }
@@ -106,7 +106,7 @@ public class UserResource {
   @RequestMapping(method = RequestMethod.POST)
   @ResponseBody
   @Transactional(readOnly = false)
-  String addUser(@RequestBody UserDTO userDTO) {
+  public String addUser(@RequestBody UserDTO userDTO) {
     User user = new User();
     user.setFirstName(userDTO.getFirstName());
     user.setLastName(userDTO.getLastName());
@@ -132,7 +132,7 @@ public class UserResource {
   @RequestMapping(value = "/{login:.+}", method = RequestMethod.DELETE)
   @ResponseBody
   @Transactional(readOnly = false)
-  void deleteUser(@PathVariable("login") String login) {
+  public void deleteUser(@PathVariable("login") String login) {
     userService.deleteUser(login);
   }
 

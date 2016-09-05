@@ -11,6 +11,8 @@ import javax.persistence.Converter;
 
 import org.springframework.util.StringUtils;
 
+import fr.slever.p2c.exception.TechnicalException;
+
 /**
  * Crypto converter
  * 
@@ -34,7 +36,7 @@ public class CryptoConverter implements AttributeConverter<String, String> {
       c.init(Cipher.ENCRYPT_MODE, key);
       return Base64.getEncoder().encodeToString(c.doFinal(ccNumber.getBytes()));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new TechnicalException("Error converting to database :" + ccNumber, e);
     }
   }
 
@@ -49,7 +51,7 @@ public class CryptoConverter implements AttributeConverter<String, String> {
       c.init(Cipher.DECRYPT_MODE, key);
       return new String(c.doFinal(Base64.getDecoder().decode(dbData)));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new TechnicalException("Error converting from database :" + dbData, e);
     }
   }
 }
