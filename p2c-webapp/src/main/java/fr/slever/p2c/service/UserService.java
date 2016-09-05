@@ -35,7 +35,7 @@ public interface UserService extends UserDetailsService {
    * @param user
    *          The user added
    */
-  public void addUser(User user);
+  public User addUser(User user);
 
   /**
    * Delete a user from database.

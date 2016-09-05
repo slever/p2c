@@ -11,6 +11,7 @@
 
 package fr.slever.p2c.web.rest;
 
+import static fr.slever.p2c.web.rest.API_URI.USERS_API;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,7 +66,7 @@ public class UserResourceTests {
 
   @Test
   public void testGetAllUsers() throws Exception {
-    restUserMockMvc.perform(get(URI.API + URI.GET_ALL_USERS).accept(MediaType.APPLICATION_JSON))
+    restUserMockMvc.perform(get(USERS_API).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andExpect(jsonPath("$[0].lastName").value("ADMIN"))
@@ -80,7 +81,7 @@ public class UserResourceTests {
 
   @Test
   public void testGetFirstUser() throws Exception {
-    restUserMockMvc.perform(get(URI.API + "/users/user.admin").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+    restUserMockMvc.perform(get(USERS_API + "/user.admin").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andExpect(jsonPath("$").isNotEmpty())
         .andExpect(jsonPath("$.lastName").value("ADMIN"))
@@ -89,21 +90,21 @@ public class UserResourceTests {
 
   @Test
   public void testGetEmptyUser() throws Exception {
-    restUserMockMvc.perform(get(URI.API + "/users/.").accept(MediaType.APPLICATION_JSON))
+    restUserMockMvc.perform(get(USERS_API + "/.").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError());
   }
 
   @Test
   public void testGetInvalidUser() throws Exception {
-    restUserMockMvc.perform(get(URI.API + "/users/invalid.login").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
-    restUserMockMvc.perform(get(URI.API + "/users/invalid").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
-    restUserMockMvc.perform(get(URI.API + "/users/useradmin").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
-    restUserMockMvc.perform(get(URI.API + "/users/admin.").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
+    restUserMockMvc.perform(get(USERS_API + "/invalid.login").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
+    restUserMockMvc.perform(get(USERS_API + "/invalid").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
+    restUserMockMvc.perform(get(USERS_API + "/useradmin").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
+    restUserMockMvc.perform(get(USERS_API + "/admin.").accept(MediaType.APPLICATION_JSON)).andExpect(status().is4xxClientError());
   }
 
   @Test
   public void testGetUserByLogin() throws Exception {
-    MvcResult result = restUserMockMvc.perform(get(URI.API + "/users/user.admin").accept(MediaType.APPLICATION_JSON))
+    MvcResult result = restUserMockMvc.perform(get(USERS_API + "/user.admin").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andExpect(jsonPath("$.login").value("user.admin"))
@@ -116,23 +117,23 @@ public class UserResourceTests {
     byte[] userJson = getJsonUser("foo", "bar", "foo@bar.com", "PRODUCER");
     System.out.println(new String(userJson));
 
-    restUserMockMvc.perform(post(URI.API + URI.POST_USER).contentType(TestUtil.APPLICATION_JSON_UTF8)
+    restUserMockMvc.perform(post(USERS_API).contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(userJson))
         .andExpect(status().isOk());
 
-    restUserMockMvc.perform(delete(URI.API + "/users/foo.bar"))
+    restUserMockMvc.perform(delete(USERS_API + "/foo.bar"))
         .andExpect(status().isOk());
   }
 
   @Test
   public void testPostUserLoginInvalid() throws Exception {
     byte[] invalidUserJson = getJsonUser("", "", "", "CONSUMER");
-    restUserMockMvc.perform(post(URI.API + URI.POST_USER).contentType(TestUtil.APPLICATION_JSON_UTF8)
+    restUserMockMvc.perform(post(USERS_API).contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(invalidUserJson))
         .andExpect(status().is4xxClientError());
 
     byte[] invalidUserJson2 = getJsonUser(null, null, null, "CONSUMER");
-    restUserMockMvc.perform(post(URI.API + URI.POST_USER).contentType(TestUtil.APPLICATION_JSON_UTF8)
+    restUserMockMvc.perform(post(USERS_API).contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(invalidUserJson2))
         .andExpect(status().is4xxClientError());
   }

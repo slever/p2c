@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void addUser(User user) {
+  public User addUser(User user) {
     String firstName = user.getFirstName();
     String lastName = user.getLastName();
     if (firstName == null || "".equals(firstName) || lastName == null || "".equals(lastName)) {
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     }
     user.setRoles(roles);
 
-    userRepository.save(user);
+    return userRepository.save(user);
   }
 
   private String generateUniquePassword() {

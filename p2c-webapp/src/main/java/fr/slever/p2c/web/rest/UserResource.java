@@ -1,5 +1,7 @@
 package fr.slever.p2c.web.rest;
 
+import static fr.slever.p2c.web.rest.API_URI.USERS_API;
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ import io.swagger.annotations.ApiResponses;
  * @author sebastienlever
  */
 @RestController
-@RequestMapping(URI.API)
+@RequestMapping(USERS_API)
 @EnableAutoConfiguration
 public class UserResource {
 
@@ -47,24 +49,25 @@ public class UserResource {
    * @param user
    * @return the connected user principal if connected
    */
-  @RequestMapping(value = "/user", method = RequestMethod.GET)
+  @RequestMapping(value = "/me", method = RequestMethod.GET)
   public Principal user(Principal user) {
     // FIXME this is a security issue (password is in http response)
     return user;
   }
 
   /**
-   * URL get for all registered users.
-   * 
-   * @return List<UserDTO> all registered users.
+   * @return all registered users.
    */
-  @RequestMapping(value = URI.GET_ALL_USERS, method = RequestMethod.GET)
+  @RequestMapping(method = RequestMethod.GET)
   @ResponseBody
   @Transactional(readOnly = true)
   @ApiOperation(value = "getUsers", nickname = "getUsers")
-  @ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = UserDTO.class), @ApiResponse(code = 401, message = "Unauthorized"),
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Success", response = UserDTO.class),
+      @ApiResponse(code = 401, message = "Unauthorized"),
       @ApiResponse(code = 403, message = "Forbidden"),
-      @ApiResponse(code = 404, message = "Not Found"), @ApiResponse(code = 500, message = "Failure") })
+      @ApiResponse(code = 404, message = "Not Found"),
+      @ApiResponse(code = 500, message = "Failure") })
   List<UserDTO> getUsers() {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("getUsers");
@@ -77,7 +80,7 @@ public class UserResource {
    * 
    * @return List<UserDTO> all registered users.
    */
-  @RequestMapping(value = URI.GET_USER, method = RequestMethod.GET)
+  @RequestMapping(value = "/{login:.+}", method = RequestMethod.GET)
   @ResponseBody
   @Transactional(readOnly = true)
   UserDTO getUser(@PathVariable("login") String login) {
@@ -87,7 +90,7 @@ public class UserResource {
     User user = this.userService.findUserByLogin(login);
     if (user == null) {
       LOGGER.warn("user not found for login {}", login);
-      throw new ResourceNotFound("/users/" + login);
+      throw new ResourceNotFound(USERS_API + "/" + login);
     }
 
     return new UserDTO(user);
@@ -96,12 +99,14 @@ public class UserResource {
   /**
    * Add an user
    * 
-   * @param firstName
+   * @param userDTO
+   *          users informations
+   * @return the created user URI
    */
-  @RequestMapping(value = URI.POST_USER, method = RequestMethod.POST)
+  @RequestMapping(method = RequestMethod.POST)
   @ResponseBody
   @Transactional(readOnly = false)
-  void addUser(@RequestBody UserDTO userDTO) {
+  String addUser(@RequestBody UserDTO userDTO) {
     User user = new User();
     user.setFirstName(userDTO.getFirstName());
     user.setLastName(userDTO.getLastName());
@@ -116,7 +121,7 @@ public class UserResource {
     }
     user.setRoles(roles);
 
-    userService.addUser(user);
+    return USERS_API + "/" + userService.addUser(user).getLogin();
   }
 
   /**
@@ -124,7 +129,7 @@ public class UserResource {
    * 
    * @param
    */
-  @RequestMapping(value = URI.DELETE_USER, method = RequestMethod.DELETE)
+  @RequestMapping(value = "/{login:.+}", method = RequestMethod.DELETE)
   @ResponseBody
   @Transactional(readOnly = false)
   void deleteUser(@PathVariable("login") String login) {

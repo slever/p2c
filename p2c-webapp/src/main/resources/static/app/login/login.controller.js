@@ -22,7 +22,7 @@
         	var headers = vm.user && vm.user.login && vm.user.login.trim() ? 
         			{ authorization : "Basic " + btoa(vm.user.login + ":" + vm.user.password) } : {};
 			
-			return $http.get('/api/user', {
+			return $http.get('/api/users/me', {
 	            headers : headers
 	          })
 	          .then(function(response) {
