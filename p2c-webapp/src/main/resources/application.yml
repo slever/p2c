@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: P2C
+    index: index
+  datasource:
+    url: jdbc:h2:file:~/odsdb;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+  h2:
+    console.enabled=false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.springframework.security: info
+
+server:
+  port: 8080
