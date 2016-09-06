@@ -13,39 +13,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.entity;
-
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+package fr.slever.p2c.web.rest;
 
 /**
- * Farm (where are the products)
+ * URI Constants
  * 
  * @author sebastienlever
  *
  */
-@Entity
-public class Farm {
+public class URI {
 
-  @Id
-  @GeneratedValue
-  private Long id;
+  /**
+   * Private constructor for constant class
+   */
+  private URI() {
+  }
 
-  @Column(nullable = false)
-  private String name;
+  /**
+   * Root API URI
+   */
+  private static final String API = "/api";
 
-  @Column
-  private String description;
+  /**
+   * Users API
+   */
+  public static final String USERS_API = API + "/users";
 
-  @OneToMany
-  private List<Product> products;
+  /**
+   * Products API
+   */
+  public static final String PRODUCT_API = API + "/products";
 
-  @OneToOne
-  private Address adress;
 }

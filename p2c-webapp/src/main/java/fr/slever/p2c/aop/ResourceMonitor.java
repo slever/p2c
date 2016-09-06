@@ -13,39 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.entity;
+package fr.slever.p2c.aop;
 
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 
 /**
- * Farm (where are the products)
+ * Log monitoring for REST ressources
  * 
  * @author sebastienlever
  *
  */
-@Entity
-public class Farm {
-
-  @Id
-  @GeneratedValue
-  private Long id;
-
-  @Column(nullable = false)
-  private String name;
-
-  @Column
-  private String description;
-
-  @OneToMany
-  private List<Product> products;
-
-  @OneToOne
-  private Address adress;
+@Aspect
+@Component
+public class ResourceMonitor {
+  @AfterReturning("execution(* fr.slever.p2c.web.rest.*Resource.*(..))")
+  public void logServiceAccess(JoinPoint joinPoint) {
+    System.out.println("Completed: " + joinPoint);
+  }
 }

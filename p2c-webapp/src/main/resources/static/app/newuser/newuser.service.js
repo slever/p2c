@@ -20,7 +20,6 @@
 			return $http.post("/api/users",user).then(function(success) {
 				return success.data;
 			}, function(error) {
-				console.error("Error posting /api/users :"+error.status);
 				return error.data;
 			});
 		}

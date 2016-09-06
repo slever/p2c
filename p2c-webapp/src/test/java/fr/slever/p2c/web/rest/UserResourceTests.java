@@ -11,7 +11,7 @@
 
 package fr.slever.p2c.web.rest;
 
-import static fr.slever.p2c.web.rest.API_URI.USERS_API;
+import static fr.slever.p2c.web.rest.URI.USERS_API;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

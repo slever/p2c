@@ -1,6 +1,21 @@
+/**
+ * Copyright 2016 sebastien lever
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package fr.slever.p2c.web.rest;
 
-import static fr.slever.p2c.web.rest.API_URI.USERS_API;
+import static fr.slever.p2c.web.rest.URI.USERS_API;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -23,6 +38,7 @@ import fr.slever.p2c.entity.Role;
 import fr.slever.p2c.entity.User;
 import fr.slever.p2c.exception.ResourceNotFound;
 import fr.slever.p2c.service.UserService;
+import fr.slever.p2c.web.rest.dto.Link;
 import fr.slever.p2c.web.rest.dto.UserDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -106,7 +122,7 @@ public class UserResource {
   @RequestMapping(method = RequestMethod.POST)
   @ResponseBody
   @Transactional(readOnly = false)
-  public String addUser(@RequestBody UserDTO userDTO) {
+  public Link addUser(@RequestBody UserDTO userDTO) {
     User user = new User();
     user.setFirstName(userDTO.getFirstName());
     user.setLastName(userDTO.getLastName());
@@ -121,13 +137,13 @@ public class UserResource {
     }
     user.setRoles(roles);
 
-    return USERS_API + "/" + userService.addUser(user).getLogin();
+    return new Link(USERS_API + "/" + userService.addUser(user).getLogin());
   }
 
   /**
    * Delete a user by <i>login</i>
    * 
-   * @param
+   * @param login
    */
   @RequestMapping(value = "/{login:.+}", method = RequestMethod.DELETE)
   @ResponseBody
