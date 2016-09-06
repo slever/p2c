@@ -15,7 +15,7 @@
  */
 package fr.slever.p2c.web.rest;
 
-import static fr.slever.p2c.web.rest.URI.USERS_API;
+import static fr.slever.p2c.web.rest.constant.URI.USERS_API;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -85,9 +85,6 @@ public class UserResource {
       @ApiResponse(code = 404, message = "Not Found"),
       @ApiResponse(code = 500, message = "Failure") })
   public List<UserDTO> getUsers() {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("getUsers");
-    }
     return this.userService.findAllUsers().stream().map(UserDTO::new).collect(Collectors.toList());
   }
 
@@ -100,9 +97,24 @@ public class UserResource {
   @ResponseBody
   @Transactional(readOnly = true)
   public UserDTO getUser(@PathVariable("login") String login) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("getUser({}) from login", login);
+    User user = this.userService.findUserByLogin(login);
+    if (user == null) {
+      LOGGER.warn("user not found for login {}", login);
+      throw new ResourceNotFound(USERS_API + "/" + login);
     }
+
+    return new UserDTO(user);
+  }
+
+  /**
+   * URL get for a particular registered user.
+   * 
+   * @return List<UserDTO> all registered users.
+   */
+  @RequestMapping(value = "/{login:.+}/commands", method = RequestMethod.GET)
+  @ResponseBody
+  @Transactional(readOnly = true)
+  public UserDTO getConsumerCommands(@PathVariable("login") String login) {
     User user = this.userService.findUserByLogin(login);
     if (user == null) {
       LOGGER.warn("user not found for login {}", login);

@@ -26,7 +26,7 @@
 			controllerAs : 'vm'
 		})
 
-		.otherwise( {redirectTo:'/listUsers' } );
+		.otherwise( {redirectTo:'/login' } );
 
 	}
 })();

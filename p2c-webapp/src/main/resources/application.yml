@@ -13,6 +13,7 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+    fr.slever.p2c.aop: debug
     org.springframework.security: info
 
 server:

@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.headers().frameOptions().disable();
 
     http.httpBasic().and().authorizeRequests()
-        .antMatchers("/", "/index.html", "/app/**/*.js", "/app/**/*.html").permitAll()
+        .antMatchers("/index.html", "/app/**/*.js", "/app/**/*.html").permitAll()
         .antMatchers("/swagger-ui.html").permitAll()
         .antMatchers("/swagger-resources/**").permitAll()
         .antMatchers("/v2/api-docs").permitAll()
@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/users/**").hasAuthority("ADMIN")
         .antMatchers(HttpMethod.POST, "/api/products").hasAuthority("PRODUCER")
         .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        .and().formLogin().loginPage("/#login").permitAll()
+        .and().formLogin().loginPage("/#/login").permitAll()
         .and().logout().permitAll().logoutUrl("/logout")
         .logoutSuccessUrl("/");
   }

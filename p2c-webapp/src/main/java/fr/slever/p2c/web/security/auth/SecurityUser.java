@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import fr.slever.p2c.entity.Role;
 import fr.slever.p2c.entity.User;
 import fr.slever.p2c.web.rest.dto.UserDTO;
@@ -40,6 +42,7 @@ public class SecurityUser extends UserDTO implements UserDetails {
    */
   private static final long serialVersionUID = -3829846003708193691L;
 
+  @JsonIgnore
   private String password;
 
   /**

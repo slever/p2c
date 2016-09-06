@@ -15,6 +15,7 @@
  */
 package fr.slever.p2c.entity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,9 @@ public class User {
   @NotNull
   @Email
   private String email;
+
+  @Column(columnDefinition = "Decimal(10,2) default '0.0'")
+  private BigDecimal amountEuro;
 
   @Column(nullable = false)
   @NotNull
@@ -240,6 +244,21 @@ public class User {
    */
   public void setVehicle(Vehicle vehicle) {
     this.vehicle = vehicle;
+  }
+
+  /**
+   * @return the amountEuro
+   */
+  public BigDecimal getAmountEuro() {
+    return amountEuro;
+  }
+
+  /**
+   * @param amountEuro
+   *          the amountEuro to set
+   */
+  public void setAmountEuro(BigDecimal amountEuro) {
+    this.amountEuro = amountEuro;
   }
 
 }

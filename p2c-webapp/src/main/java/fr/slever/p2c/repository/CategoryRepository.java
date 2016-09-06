@@ -13,40 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.web.rest.constant;
+package fr.slever.p2c.repository;
+
+import org.springframework.data.repository.CrudRepository;
+
+import fr.slever.p2c.entity.Category;
 
 /**
- * URI Constants
+ * CRUD Repository for product category entity
  * 
  * @author sebastienlever
  *
  */
-public class URI {
-
-  /**
-   * Private constructor for constant class
-   */
-  private URI() {
-  }
-
-  /**
-   * Root API URI
-   */
-  private static final String API = "/api";
-
-  /**
-   * Users API
-   */
-  public static final String USERS_API = API + "/users";
-
-  /**
-   * Products API
-   */
-  public static final String PRODUCT_API = API + "/products";
-
-  /**
-   * Commands API
-   */
-  public static final String COMMAND_API = API + "/commands";
+public interface CategoryRepository extends CrudRepository<Category, Long> {
 
 }

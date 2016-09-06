@@ -13,40 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.web.rest.constant;
+package fr.slever.p2c.service;
+
+import java.util.List;
+
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import fr.slever.p2c.entity.Command;
 
 /**
- * URI Constants
+ * Mostly used as a facade so all controllers related to the Command class have
+ * a single point of entry.
  * 
  * @author sebastienlever
- *
  */
-public class URI {
+public interface CommandService extends UserDetailsService {
 
   /**
-   * Private constructor for constant class
+   * Find user commands by login.
+   * 
+   * @param login
+   * @return the user with the associated login.
    */
-  private URI() {
-  }
-
-  /**
-   * Root API URI
-   */
-  private static final String API = "/api";
-
-  /**
-   * Users API
-   */
-  public static final String USERS_API = API + "/users";
-
-  /**
-   * Products API
-   */
-  public static final String PRODUCT_API = API + "/products";
-
-  /**
-   * Commands API
-   */
-  public static final String COMMAND_API = API + "/commands";
+  public List<Command> findCommandsByLogin(String login);
 
 }

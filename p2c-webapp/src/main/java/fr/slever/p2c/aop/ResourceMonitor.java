@@ -18,6 +18,8 @@ package fr.slever.p2c.aop;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,8 +31,15 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class ResourceMonitor {
-  @AfterReturning("execution(* fr.slever.p2c.web.rest.*Resource.*(..))")
-  public void logServiceAccess(JoinPoint joinPoint) {
-    System.out.println("Completed: " + joinPoint);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ResourceMonitor.class);
+
+  /**
+   * Log resource access if logLevel is debug
+   * 
+   * @param joinPoint
+   */
+  @AfterReturning(" execution(public * fr.slever.p2c.web.rest.*Resource.*(..))")
+  public void logResourceAccess(JoinPoint joinPoint) {
+    LOGGER.debug(">> {}, args:{}", joinPoint.getSignature(), joinPoint.getArgs());
   }
 }

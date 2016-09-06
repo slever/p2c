@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
   public void deleteUser(String login) {
     User user = userRepository.findByLogin(login);
     if (user == null) {
-      LOGGER.warn("user not found for login={}", login);
+      throw new UsernameNotFoundException(login);
     } else {
       userRepository.delete(user.getId());
     }
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String userName) {
     User user = findUserByLogin(userName);
     if (user == null) {
       throw new UsernameNotFoundException(userName);
