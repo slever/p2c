@@ -15,17 +15,22 @@
  */
 package fr.slever.p2c.data.repository;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
-import fr.slever.p2c.data.entity.Address;
+import fr.slever.p2c.data.entity.Role;
 
 /**
- * CRUD Repository for adress entity
+ * CRUD Repository for user's role entity
  * 
  * @author sebastienlever
  *
  */
-// RepositoryRestResource(path="adress")
-public interface AdressRepository extends PagingAndSortingRepository<Address, Long> {
+// RepositoryRestResource(path="roles")
+public interface RoleRepository extends CrudRepository<Role, Long> {
 
+  /**
+   * @param name
+   * @return the role by name
+   */
+  Role findByName(String name);
 }

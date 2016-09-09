@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import fr.slever.p2c.entity.User;
+import fr.slever.p2c.data.entity.User;
 
 /**
  * Mostly used as a facade so all controllers related to the User class have a

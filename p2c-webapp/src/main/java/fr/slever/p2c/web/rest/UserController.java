@@ -17,32 +17,31 @@ package fr.slever.p2c.web.rest;
 
 import static fr.slever.p2c.web.rest.constant.URI.USERS_API;
 
-import java.security.Principal;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.slever.p2c.entity.Role;
-import fr.slever.p2c.entity.User;
+import fr.slever.p2c.data.entity.User;
 import fr.slever.p2c.exception.ResourceNotFound;
 import fr.slever.p2c.service.UserService;
-import fr.slever.p2c.web.rest.dto.Link;
-import fr.slever.p2c.web.rest.dto.UserDTO;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import fr.slever.p2c.web.rest.resource.RoleResource;
+import fr.slever.p2c.web.rest.resource.RolesResource;
+import fr.slever.p2c.web.rest.resource.UserResource;
+import fr.slever.p2c.web.rest.resource.UsersResource;
 
 /**
  * User Resource
@@ -51,41 +50,42 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping(USERS_API)
-@EnableAutoConfiguration
-public class UserResource {
+// EnableHypermediaSupport(type = { HypermediaType.HAL })
+public class UserController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
   @Autowired
   private UserService userService;
 
   /**
-   * Security purpose
-   * 
-   * @param user
-   * @return the connected user principal if connected
-   */
-  @RequestMapping(value = "/me", method = RequestMethod.GET)
-  public Principal user(Principal user) {
-    // FIXME this is a security issue (password is in http response)
-    return user;
-  }
-
-  /**
    * @return all registered users.
    */
-  @RequestMapping(method = RequestMethod.GET)
-  @ResponseBody
+  @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional(readOnly = true)
-  @ApiOperation(value = "getUsers", nickname = "getUsers")
-  @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Success", response = UserDTO.class),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 403, message = "Forbidden"),
-      @ApiResponse(code = 404, message = "Not Found"),
-      @ApiResponse(code = 500, message = "Failure") })
-  public List<UserDTO> getUsers() {
-    return this.userService.findAllUsers().stream().map(UserDTO::new).collect(Collectors.toList());
+  public ResponseEntity<UsersResource> getUsers() {
+    List<UserResource> userResources = this.userService.findAllUsers().stream().map(UserResource::new)
+        .collect(Collectors.toList());
+    UsersResource resources = new UsersResource(userResources);
+    return new ResponseEntity<>(resources, HttpStatus.OK);
+  }
+
+  /**
+   * Get user for <i>login</i>
+   * 
+   * @param login
+   * @return the user resource
+   */
+  @RequestMapping(value = "/{login:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @Transactional(readOnly = true)
+  public ResponseEntity<UserResource> getUser(@PathVariable("login") String login) {
+    User user = userService.findUserByLogin(login);
+    if (user == null) {
+      LOGGER.warn("user not found for login {}", login);
+      throw new ResourceNotFound(USERS_API + "/" + login);
+    }
+
+    return new ResponseEntity<>(new UserResource(user), HttpStatus.OK);
   }
 
   /**
@@ -93,35 +93,19 @@ public class UserResource {
    * 
    * @return List<UserDTO> all registered users.
    */
-  @RequestMapping(value = "/{login:.+}", method = RequestMethod.GET)
-  @ResponseBody
+  @RequestMapping(value = "/{login:.+}/roles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional(readOnly = true)
-  public UserDTO getUser(@PathVariable("login") String login) {
-    User user = this.userService.findUserByLogin(login);
+  public ResponseEntity<RolesResource> getUserRoles(@PathVariable("login") String login) {
+    User user = userService.findUserByLogin(login);
     if (user == null) {
       LOGGER.warn("user not found for login {}", login);
       throw new ResourceNotFound(USERS_API + "/" + login);
     }
 
-    return new UserDTO(user);
-  }
+    List<RoleResource> roleResources = user.getRoles().stream().map(RoleResource::new)
+        .collect(Collectors.toList());
 
-  /**
-   * URL get for a particular registered user.
-   * 
-   * @return List<UserDTO> all registered users.
-   */
-  @RequestMapping(value = "/{login:.+}/commands", method = RequestMethod.GET)
-  @ResponseBody
-  @Transactional(readOnly = true)
-  public UserDTO getConsumerCommands(@PathVariable("login") String login) {
-    User user = this.userService.findUserByLogin(login);
-    if (user == null) {
-      LOGGER.warn("user not found for login {}", login);
-      throw new ResourceNotFound(USERS_API + "/" + login);
-    }
-
-    return new UserDTO(user);
+    return new ResponseEntity<>(new RolesResource(roleResources), HttpStatus.OK);
   }
 
   /**
@@ -131,25 +115,19 @@ public class UserResource {
    *          users informations
    * @return the created user URI
    */
-  @RequestMapping(method = RequestMethod.POST)
-  @ResponseBody
+  @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional(readOnly = false)
-  public Link addUser(@RequestBody UserDTO userDTO) {
-    User user = new User();
-    user.setFirstName(userDTO.getFirstName());
-    user.setLastName(userDTO.getLastName());
-    user.setEmail(userDTO.getEmail());
-    user.setMobile(userDTO.getMobile());
-
-    List<Role> roles = new ArrayList<>();
-    for (String roleName : userDTO.getRoles()) {
-      Role role = new Role();
-      role.setName(roleName);
-      roles.add(role);
+  public ResponseEntity<?> addUser(@RequestBody User user) {
+    Map<String, String> validationErrors = new HashMap<String, String>();
+    if (user.getFirstName() == null) {
+      validationErrors.put("error", "missing firstName");
+    } // TODO complete
+    if (!validationErrors.isEmpty()) {
+      new ResponseEntity<Object>(validationErrors, HttpStatus.BAD_REQUEST);
     }
-    user.setRoles(roles);
 
-    return new Link(USERS_API + "/" + userService.addUser(user).getLogin());
+    User createdUser = userService.addUser(user);
+    return new ResponseEntity<>(new UserResource(createdUser), HttpStatus.CREATED);
   }
 
   /**
@@ -158,10 +136,10 @@ public class UserResource {
    * @param login
    */
   @RequestMapping(value = "/{login:.+}", method = RequestMethod.DELETE)
-  @ResponseBody
   @Transactional(readOnly = false)
-  public void deleteUser(@PathVariable("login") String login) {
+  public ResponseEntity<?> deleteUser(@PathVariable("login") String login) {
     userService.deleteUser(login);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
 }

@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.repository;
+package fr.slever.p2c.data.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-import fr.slever.p2c.entity.Command;
+import fr.slever.p2c.data.entity.Command;
 
 /**
  * CRUD Repository for command entity
@@ -25,6 +25,7 @@ import fr.slever.p2c.entity.Command;
  * @author sebastienlever
  *
  */
-public interface CommandRepository extends CrudRepository<Command, Long> {
+// RepositoryRestResource(path= "commands")
+public interface CommandRepository extends PagingAndSortingRepository<Command, Long> {
 
 }

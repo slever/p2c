@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.entity;
+package fr.slever.p2c.data.entity;
 
 import java.time.LocalDateTime;
 

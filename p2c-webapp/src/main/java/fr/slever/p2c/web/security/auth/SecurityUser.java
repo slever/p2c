@@ -15,89 +15,43 @@
  */
 package fr.slever.p2c.web.security.auth;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import fr.slever.p2c.entity.Role;
-import fr.slever.p2c.entity.User;
-import fr.slever.p2c.web.rest.dto.UserDTO;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * User Details for security
  * 
  * @author sebastienlever
- *
  */
-public class SecurityUser extends UserDTO implements UserDetails {
+public class SecurityUser extends User {
+	
+	private String fullName;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 2833080659217951978L;
 
-  /**
-   * serialVersionUID
-   */
-  private static final long serialVersionUID = -3829846003708193691L;
+	/**
+	 * @param user
+	 */
+	public SecurityUser(fr.slever.p2c.data.entity.User user, List<GrantedAuthority> authorities) {
+		super(user.getLogin(), user.getPassword(), authorities);
+		this.fullName=user.getFirstName()+" "+user.getLastName();
+	}
 
-  @JsonIgnore
-  private String password;
+	/**
+	 * @return the fullName
+	 */
+	public String getFullName() {
+		return fullName;
+	}
 
-  /**
-   * @param user
-   */
-  public SecurityUser(User user) {
-    super(user.getFirstName(),
-        user.getLastName(),
-        user.getEmail(),
-        user.getLogin(),
-        user.getMobile(),
-        user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
-    this.password = user.getPassword();
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    List<SecurityRole> roles = new ArrayList<>();
-    for (String role : getRoles()) {
-      roles.add(new SecurityRole(role));
-    }
-    return roles;
-  }
-
-  @Override
-  public String getUsername() {
-    return getLogin();
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    // user is never expired
-    return true;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    // user is never locked
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    // user is never expired
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    // user is always enabled
-    return true;
-  }
-
-  @Override
-  public String getPassword() {
-    return this.password;
-  }
+	/**
+	 * @param fullName the fullName to set
+	 */
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 }

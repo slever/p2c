@@ -13,19 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.data.repository;
+package fr.slever.p2c.web.rest.resource;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import java.util.ArrayList;
 
-import fr.slever.p2c.data.entity.Address;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
+
 
 /**
- * CRUD Repository for adress entity
+ * HATEOAS resource representing a users collection
  * 
  * @author sebastienlever
  *
  */
-// RepositoryRestResource(path="adress")
-public interface AdressRepository extends PagingAndSortingRepository<Address, Long> {
+public class UsersResource extends Resources<UserResource> {
 
+	public UsersResource(Iterable<UserResource> users) {
+		super(users, new ArrayList<Link>());
+	}
+	
 }

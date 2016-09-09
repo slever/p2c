@@ -13,19 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.data.repository;
+package fr.slever.p2c.web.rest.resource;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 
-import fr.slever.p2c.data.entity.Address;
+import fr.slever.p2c.data.entity.Role;
+import fr.slever.p2c.web.rest.RoleController;
 
 /**
- * CRUD Repository for adress entity
+ * HATEOAS resource representing a role
  * 
  * @author sebastienlever
  *
  */
-// RepositoryRestResource(path="adress")
-public interface AdressRepository extends PagingAndSortingRepository<Address, Long> {
+public class RoleResource extends Resource<Role> {
+
+  public RoleResource(Role role) {
+    super(role);
+
+    add(ControllerLinkBuilder
+        .linkTo(ControllerLinkBuilder.methodOn(RoleController.class).getRole(role.getName()))
+        .withSelfRel());
+  }
 
 }

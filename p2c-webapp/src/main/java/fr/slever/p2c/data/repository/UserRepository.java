@@ -13,11 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.repository;
+package fr.slever.p2c.data.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
 
-import fr.slever.p2c.entity.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+
+import fr.slever.p2c.data.entity.User;
 
 /**
  * CRUD Repository for user entity
@@ -25,16 +29,35 @@ import fr.slever.p2c.entity.User;
  * @author sebastienlever
  *
  */
-public interface UserRepository extends CrudRepository<User, Long> {
+// RepositoryRestResource(path = "users",
+// collectionResourceDescription = @Description("List of users of the
+// application"),
+// collectionResourceRel = "users",
+// itemResourceRel = "user",
+// itemResourceDescription = @Description("A user with profile (ex: consumer,
+// producer, transporter)"))
+public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
   /**
+   * Count the users with specified <i>login</i>
+   * 
+   * @param login
+   * @return
+   */
+  @Query("SELECT COUNT(u) FROM User u WHERE u.login=:login")
+  Integer countUsersWithLogin(@Param("login") String login);
+
+  /**
+   * @param login
    * @return the user by login
    */
-  User findByLogin(String login);
+  Optional<User> findByLogin(@Param("login") String login);
 
   /**
+   * @param id
+   *          the id of the user
    * @return the user by id
    */
-  User findById(Long id);
+  User findById(@Param("id") Long id);
 
 }

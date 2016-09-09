@@ -17,21 +17,24 @@ package fr.slever.p2c.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import fr.slever.p2c.entity.Role;
-import fr.slever.p2c.entity.User;
+import fr.slever.p2c.data.entity.Role;
+import fr.slever.p2c.data.entity.User;
+import fr.slever.p2c.data.repository.RoleRepository;
+import fr.slever.p2c.data.repository.UserRepository;
 import fr.slever.p2c.exception.FunctionalException;
-import fr.slever.p2c.repository.RoleRepository;
-import fr.slever.p2c.repository.UserRepository;
 import fr.slever.p2c.web.security.auth.SecurityUser;
 
 /**
@@ -66,11 +69,9 @@ public class UserServiceImpl implements UserService {
   public User addUser(User user) {
     String firstName = user.getFirstName();
     String lastName = user.getLastName();
-    if (firstName == null || "".equals(firstName) || lastName == null || "".equals(lastName)) {
+    if (StringUtils.isEmpty(firstName) || StringUtils.isEmpty(lastName)) {
       throw new FunctionalException("firstName and lastName should not be empty");
     }
-    user.setLogin(getUniqueLogin(firstName, lastName));
-    user.setPassword(generateUniquePassword());
 
     List<Role> roles = new ArrayList<>();
     for (Role r : user.getRoles()) {
@@ -78,51 +79,42 @@ public class UserServiceImpl implements UserService {
       roles.add(role);
     }
     user.setRoles(roles);
-
+    
     return userRepository.save(user);
-  }
-
-  private String generateUniquePassword() {
-    // TODO Auto-generated method stub
-    return KeyGenerators.string().generateKey();
-  }
-
-  private String getUniqueLogin(String firstName, String lastName) {
-    String login = firstName.toLowerCase() + "." + lastName.toLowerCase();
-    String newLogin = new String(login);
-    int suffix = 1;
-    while (userRepository.findByLogin(newLogin) != null) {
-      newLogin = login + suffix;
-      suffix++;
-    }
-    return newLogin;
   }
 
   @Override
   public void deleteUser(String login) {
-    User user = userRepository.findByLogin(login);
-    if (user == null) {
-      throw new UsernameNotFoundException(login);
+    Optional<User> user = userRepository.findByLogin(login);
+    if (user.isPresent()) {
+    	userRepository.delete(user.get().getId());
     } else {
-      userRepository.delete(user.getId());
+    	throw new UsernameNotFoundException(login);
     }
   }
 
   @Override
   public User findUserByLogin(String login) {
-    User user = userRepository.findByLogin(login);
-    if (user == null) {
-      LOGGER.warn("user not found for login={}", login);
+	  Optional<User> user = userRepository.findByLogin(login);
+    if (user.isPresent()) {
+    	return user.get();
+    } else {
+    	throw new UsernameNotFoundException(login);
     }
-    return user;
   }
 
   @Override
   public UserDetails loadUserByUsername(String userName) {
-    User user = findUserByLogin(userName);
-    if (user == null) {
-      throw new UsernameNotFoundException(userName);
+	  Optional<User> entity = userRepository.findByLogin(userName);
+    if (entity.isPresent()) {
+    	User user = entity.get();
+    	List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : user.getRoles()) {
+        	authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+    	return new SecurityUser(user,authorities);
+    } else {
+    	throw new UsernameNotFoundException(userName);
     }
-    return new SecurityUser(user);
   }
 }

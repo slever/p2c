@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,9 +38,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import fr.slever.p2c.data.entity.Role;
+import fr.slever.p2c.data.entity.User;
 import fr.slever.p2c.service.UserService;
 import fr.slever.p2c.util.TestUtil;
-import fr.slever.p2c.web.rest.dto.UserDTO;
 
 /**
  * User Integration test
@@ -58,7 +59,7 @@ public class UserResourceTests {
 
   @Before
   public void setup() {
-    UserResource userResource = new UserResource();
+    UserController userResource = new UserController();
 
     ReflectionTestUtils.setField(userResource, "userService", userService);
     this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
@@ -66,7 +67,7 @@ public class UserResourceTests {
 
   @Test
   public void testGetAllUsers() throws Exception {
-    restUserMockMvc.perform(get(USERS_API).accept(MediaType.APPLICATION_JSON))
+    restUserMockMvc.perform(get("/api/users").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andExpect(jsonPath("$[0].lastName").value("ADMIN"))
@@ -139,13 +140,15 @@ public class UserResourceTests {
   }
 
   private byte[] getJsonUser(String firstName, String lastName, String email, String role) throws IOException {
-    UserDTO user = new UserDTO();
+    User user = new User();
     user.setFirstName(firstName);
     user.setLastName(lastName);
     user.setEmail(email);
     user.setMobile("0666554433");
-    Set<String> roles = new HashSet<>();
-    roles.add(role);
+    List<Role> roles = new ArrayList<>();
+    Role userRole = new Role();
+    userRole.setName(role);
+    roles.add(userRole);
     user.setRoles(roles);
 
     return TestUtil.convertObjectToJsonBytes(user);

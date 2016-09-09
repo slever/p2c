@@ -17,9 +17,7 @@ package fr.slever.p2c.service;
 
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import fr.slever.p2c.entity.Command;
+import fr.slever.p2c.data.entity.Command;
 
 /**
  * Mostly used as a facade so all controllers related to the Command class have
@@ -27,7 +25,7 @@ import fr.slever.p2c.entity.Command;
  * 
  * @author sebastienlever
  */
-public interface CommandService extends UserDetailsService {
+public interface CommandService {
 
   /**
    * Find user commands by login.

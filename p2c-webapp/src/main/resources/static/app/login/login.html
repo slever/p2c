@@ -1,17 +1,15 @@
 <section id="dashboard-view" class="login-template">
 	<div ng-show="isAuthenticated">
 		<h1 class="panel panel-primary" style="color: #2488F2">Profile </h1>
-		<B>Connected User:</B> <b>{{authUser.firstName}} {{authUser.lastName}}</b> <br> <br>
-		<B>Email :</B> {{authUser.email}} <br>
-		<B>Login :</B> {{authUser.login}} <br>
+		<B>Connected User:</B> <b>{{authUser.fullname}}</b> <br> <br>
 		<br>
 		<div class="tableaux">
 			<table>
 				<tr class="panel panel-primary">
 					<th class="panel-heading">Your role(s)</th>
 				</tr>
-				<tr class="panel panel-primary" ng-repeat="role in authUser.roles">
-				 	<td>{{role}}</td>
+				<tr class="panel panel-primary" ng-repeat="role in authUser.authorities">
+				 	<td>{{role.authority}}</td>
 				</tr>
 			  </table>
 		</div>

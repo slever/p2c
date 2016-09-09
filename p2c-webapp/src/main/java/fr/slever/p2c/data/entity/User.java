@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.entity;
+package fr.slever.p2c.data.entity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +36,9 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 
-import fr.slever.p2c.entity.converter.CryptoConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import fr.slever.p2c.data.entity.converter.CryptoConverter;
 
 /**
  * A User
@@ -59,6 +61,7 @@ public class User {
   @Column(nullable = false)
   @NotNull
   @Convert(converter = CryptoConverter.class)
+  @JsonIgnore
   private String password;
 
   @Column(nullable = false)
@@ -259,6 +262,17 @@ public class User {
    */
   public void setAmountEuro(BigDecimal amountEuro) {
     this.amountEuro = amountEuro;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "User [id=" + id + ", login=" + login + ", firstName=" + firstName + ", lastName=" + lastName + ", email="
+        + email + ", amountEuro=" + amountEuro + ", mobile=" + mobile + ", adress=" + adress + ", roles=" + roles
+        + ", vehicle=" + vehicle + "]";
   }
 
 }

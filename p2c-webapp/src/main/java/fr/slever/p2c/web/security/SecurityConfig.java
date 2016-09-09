@@ -23,7 +23,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import fr.slever.p2c.service.UserService;
 
@@ -54,16 +53,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.headers().frameOptions().disable();
 
     http.httpBasic().and().authorizeRequests()
-        .antMatchers("/index.html", "/app/**/*.js", "/app/**/*.html").permitAll()
-        .antMatchers("/swagger-ui.html").permitAll()
-        .antMatchers("/swagger-resources/**").permitAll()
-        .antMatchers("/v2/api-docs").permitAll()
+        .antMatchers("/", "/index.html", "/app/**/*.js", "/app/**/*.html", "/api").permitAll()
         .anyRequest().authenticated()
         .antMatchers("/api/users/**").hasAuthority("ADMIN")
         .antMatchers(HttpMethod.POST, "/api/products").hasAuthority("PRODUCER")
-        .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        .and().formLogin().loginPage("/#/login").permitAll()
-        .and().logout().permitAll().logoutUrl("/logout")
-        .logoutSuccessUrl("/");
+        // .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        // .and().formLogin().loginPage("/#/login").permitAll()
+        // .and().logout().permitAll().logoutUrl("/logout")
+        // .logoutSuccessUrl("/");
+        .and().csrf().disable();
   }
 }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import fr.slever.p2c.entity.converter.CryptoConverter;
+import fr.slever.p2c.data.entity.converter.CryptoConverter;
 
 public class CryptoConverterTest {
 

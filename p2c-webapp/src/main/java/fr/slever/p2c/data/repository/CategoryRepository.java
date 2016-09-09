@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.repository;
+package fr.slever.p2c.data.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-import fr.slever.p2c.entity.Category;
+import fr.slever.p2c.data.entity.Category;
 
 /**
  * CRUD Repository for product category entity
@@ -25,6 +25,7 @@ import fr.slever.p2c.entity.Category;
  * @author sebastienlever
  *
  */
-public interface CategoryRepository extends CrudRepository<Category, Long> {
+// RepositoryRestResource(path="category")
+public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
 
 }

@@ -49,7 +49,12 @@ public enum CommandStatus {
   /**
    * the command is in error and require admin action
    */
-  ERROR(60);
+  ERROR(60)
+  ,
+  /**
+   * the command has been stollen and require admin action
+   */
+  STOLEN(70);
 
   /**
    * the code for the status (stored in db)

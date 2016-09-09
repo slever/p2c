@@ -40,6 +40,11 @@ public class URI {
   public static final String USERS_API = API + "/users";
 
   /**
+   * Users API
+   */
+  public static final String ROLES_API = API + "/roles";
+
+  /**
    * Products API
    */
   public static final String PRODUCT_API = API + "/products";

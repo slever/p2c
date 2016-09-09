@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.slever.p2c.entity.Role;
-import fr.slever.p2c.entity.User;
+import fr.slever.p2c.data.entity.Role;
+import fr.slever.p2c.data.entity.User;
 import fr.slever.p2c.exception.FunctionalException;
 
 @RunWith(SpringRunner.class)

@@ -13,19 +13,29 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package fr.slever.p2c.data.repository;
-
-import org.springframework.data.repository.PagingAndSortingRepository;
-
-import fr.slever.p2c.data.entity.Address;
+package fr.slever.p2c.constant;
 
 /**
- * CRUD Repository for adress entity
+ * Users roles
  * 
  * @author sebastienlever
  *
  */
-// RepositoryRestResource(path="adress")
-public interface AdressRepository extends PagingAndSortingRepository<Address, Long> {
-
+public enum RoleEnum {
+	/**
+	 * Administrator: manage users
+	 */
+	ADMIN,
+	/**
+	 * Consumer: command products
+	 */
+	CONSUMER, 
+	/**
+	 * Producer: has a farm and produce products
+	 */
+	PRODUCER, 
+	/**
+	 * Transporter: manage delivery
+	 */
+	TRANSPORTER;
 }
